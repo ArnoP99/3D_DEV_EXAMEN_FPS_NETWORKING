@@ -23,9 +23,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region Public Fields
 
-    [Tooltip("The current Health of our player")]
-    public float Health = 1f;
-
     [Tooltip("The local player instance. Use this to know if the local player is represented in the Scene")]
     public static GameObject LocalPlayerInstance;
 
@@ -141,11 +138,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             this.ProcessInputs();
 
-            if (this.Health <= 0f)
-            {
-                Destroy(LocalPlayerInstance);
-                //GameManager.Instance.LeaveRoom();
-            }
         }
     }
 
@@ -170,7 +162,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
-        this.Health -= 0.1f;
     }
 
     /// <summary>
@@ -194,7 +185,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         // we slowly affect health when beam is constantly hitting us, so player has to move to prevent death.
-        this.Health -= 0.1f * Time.deltaTime;
     }
 
 
@@ -276,13 +266,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             // We own this player: send the others our data
             stream.SendNext(this.IsFiring);
-            stream.SendNext(this.Health);
         }
         else
         {
             // Network player, receive data
             this.IsFiring = (bool)stream.ReceiveNext();
-            this.Health = (float)stream.ReceiveNext();
         }
     }
 

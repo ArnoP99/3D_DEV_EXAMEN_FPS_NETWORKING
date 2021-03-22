@@ -31,10 +31,6 @@ using UnityEngine.UI;
 	    [SerializeField]
 	    private Text playerNameText;
 
-	    [Tooltip("UI Slider to display Player's Health")]
-	    [SerializeField]
-	    private Slider playerHealthSlider;
-
         PlayerManager target;
 
 		float characterControllerHeight;
@@ -76,9 +72,6 @@ using UnityEngine.UI;
 
 
 			// Reflect the Player Health
-			if (playerHealthSlider != null) {
-				playerHealthSlider.value = target.Health;
-			}
 		}
 
 		/// <summary>
@@ -140,6 +133,11 @@ using UnityEngine.UI;
                 playerNameText.text = this.target.photonView.Owner.NickName;
 			}
 		}
+
+	public Text getPlayerName()
+    {
+		return playerNameText;
+    }
 
 		#endregion
 

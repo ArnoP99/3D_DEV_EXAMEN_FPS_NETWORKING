@@ -80,6 +80,15 @@ public class PlayerCamera : MonoBehaviour
 
         RotateCamera();
 
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     void SwitchCameraPerspectiveInput()
