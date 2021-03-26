@@ -23,11 +23,11 @@ namespace EasySurvivalScripts
         public string JumpInput = "Jump";
 
         [Header("Player Motor")]
-        [Range(1f,15f)]
+        [Range(1f, 15f)]
         public float walkSpeed;
-        [Range(1f,15f)]
+        [Range(1f, 15f)]
         public float runSpeed;
-        [Range(1f,15f)]
+        [Range(1f, 15f)]
         public float JumpForce;
         public Transform FootLocation;
 
@@ -95,7 +95,7 @@ namespace EasySurvivalScripts
                     else
                         playerStates = PlayerStates.Running;
 
-                    _footstepDelay = (2/_speed);
+                    _footstepDelay = (2 / _speed);
                 }
             }
             else
@@ -182,6 +182,13 @@ namespace EasySurvivalScripts
             return retVal;
         }
 
+        public float WalkSpeed
+        {
+            set
+            {
+                walkSpeed = value;
+            }
+        }
         void PlayFootstepSounds()
         {
             if (playerStates == PlayerStates.Idle || playerStates == PlayerStates.Jumping)
