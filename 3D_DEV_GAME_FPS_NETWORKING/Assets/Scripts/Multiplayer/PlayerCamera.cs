@@ -36,6 +36,7 @@ public class PlayerCamera : MonoBehaviour
     Vector3 camMoveLoc;
     Transform _fpsCameraHelper;
     Transform _tpsCameraHelper;
+    bool cameraLock = false;
 
     private void Awake()
     {
@@ -74,12 +75,27 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SwitchCameraPerspectiveInput();
+        if(cameraLock == false)
+        {
+            SwitchCameraPerspectiveInput();
 
-        GetSetPerspective();
+            GetSetPerspective();
 
-        RotateCamera();
+            RotateCamera();
+        }
 
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            cameraLock = true;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            cameraLock = false;
+
+        }
     }
 
     void SwitchCameraPerspectiveInput()

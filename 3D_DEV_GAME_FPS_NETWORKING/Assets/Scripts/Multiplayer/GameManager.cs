@@ -87,10 +87,7 @@ namespace Photon.Pun.Demo.PunBasics
 		void Update()
 		{
 			// "back" button of phone equals "Escape". quit app if that's pressed
-			if (Input.GetKeyDown(KeyCode.Escape))
-			{
-				QuitApplication();
-			}
+			
 		}
 
         #endregion
