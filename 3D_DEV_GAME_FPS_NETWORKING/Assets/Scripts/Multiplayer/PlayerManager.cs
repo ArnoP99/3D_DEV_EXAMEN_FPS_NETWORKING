@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using Photon.Pun;
-using Photon.Realtime;
 
 #pragma warning disable 649
 

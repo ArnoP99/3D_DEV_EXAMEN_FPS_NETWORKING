@@ -18,7 +18,11 @@ public class EnemyFollow : MonoBehaviour
                 closestPlayer = item;
             }
         }
-        enemy.SetDestination(closestPlayer.transform.position);
+        if (closestPlayer != null)
+        {
+            enemy.SetDestination(closestPlayer.transform.position);
+        }
+
         distance = 1000f; // Reset distance for next check
     }
 }

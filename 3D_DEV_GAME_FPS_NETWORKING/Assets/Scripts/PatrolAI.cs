@@ -3,13 +3,11 @@ using UnityEngine.AI;
 
 public class PatrolAI : MonoBehaviour
 {
-    public float FollowDistance = 7.5f;
-
+    public float FollowDistance;
     public NavMeshAgent patroler;
     private GameObject[] players;
-    private NavMeshAgent agent;
-
     public Transform[] points;
+    private NavMeshAgent agent;
 
     void Start()
     {
@@ -29,22 +27,21 @@ public class PatrolAI : MonoBehaviour
             {
                 float dist = Vector3.Distance(item.transform.position, this.transform.position);
 
-                bool patrol = true;
+                bool patrol = false;
                 bool follow = (dist < FollowDistance);
-
+                patrol = !follow && points.Length > 0;
 
                 if (follow)
                 {
+                    agent.stoppingDistance = 2.5f;
                     agent.SetDestination(item.transform.position);
                 }
-                patrol = !follow && points.Length > 0;
+
                 if (patrol)
                 {
+                    agent.stoppingDistance = 0f;
                     if (!agent.pathPending && agent.remainingDistance < 0.5f)
-                    {
                         GotoNextPoint();
-                        Debug.Log("test");
-                    }
                 }
             }
         }

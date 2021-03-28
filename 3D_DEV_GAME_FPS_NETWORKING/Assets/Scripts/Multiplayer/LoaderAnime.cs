@@ -50,7 +50,6 @@ namespace Photon.Pun.Demo.PunBasics
         /// </summary>
         void Update()
         {
-
             // only care about rotating particles if we are animating
             if (isAnimating)
             {
