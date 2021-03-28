@@ -1,22 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 using Photon.Pun;
 
-public class selectionmanager : MonoBehaviour, IPunObservable
+public class SelectionManager : MonoBehaviour, IPunObservable
 {
     [SerializeField] private Material highlightMaterial;
     [SerializeField] private Material defaultMaterial;
 
-    public Text score;
-    private Transform _selection;
+    [SerializeField] private Text score;
+
+    private Transform selection;
+
     private int scoreStart = 0;
-    public float distance;
+    private float distance = 2.5f;
     private string standardText = "/9 Exams Collected";
 
-    // Start is called before the first frame update
     void Start()
     {
         score.text = scoreStart.ToString() + standardText;
@@ -25,11 +24,11 @@ public class selectionmanager : MonoBehaviour, IPunObservable
     // Update is called once per frame
     void Update()
     {
-        if (_selection != null)
+        if (selection != null)
         {
-            var selectionRenderer = _selection.GetComponent<Renderer>();
+            var selectionRenderer = selection.GetComponent<Renderer>();
             selectionRenderer.material = defaultMaterial;
-            _selection = null;
+            selection = null;
         }
         try
         {
@@ -38,13 +37,15 @@ public class selectionmanager : MonoBehaviour, IPunObservable
             {
                 Camera tempCam = item.GetComponent<Camera>();
                 var ray = tempCam.ScreenPointToRay(Input.mousePosition);
+
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit) && hit.transform.tag == "Examen" && hit.distance < distance)
                 {
-                    Debug.Log("hit");
                     var selection = hit.transform;
+
                     hit.transform.gameObject.GetPhotonView().RequestOwnership();
                     score.gameObject.GetPhotonView().RequestOwnership();
+
                     var selectionRenderer = selection.GetComponent<Renderer>();
                     if (selectionRenderer != null)
                     {
@@ -54,10 +55,9 @@ public class selectionmanager : MonoBehaviour, IPunObservable
                             PhotonNetwork.Destroy(hit.transform.gameObject);
 
                             score.gameObject.GetPhotonView().RPC("updateScore", RpcTarget.All, standardText);
-                            //score.text = scoreStart.ToString() + standardText;
                         }
                     }
-                    _selection = selection;
+                    this.selection = selection;
                 }
             }
         }
@@ -65,10 +65,7 @@ public class selectionmanager : MonoBehaviour, IPunObservable
         {
             Debug.Log(ex.ToString());
         }
-
-
     }
-
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

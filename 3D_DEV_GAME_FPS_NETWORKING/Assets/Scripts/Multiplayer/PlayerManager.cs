@@ -1,14 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PlayerManager.cs" company="Exit Games GmbH">
-//   Part of: Photon Unity Networking Demos
-// </copyright>
-// <summary>
-//  Used in PUN Basics Tutorial to deal with the networked player instance
-// </summary>
-// <author>developer@exitgames.com</author>
-// --------------------------------------------------------------------------------------------------------------------
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using Photon.Pun;
 using Photon.Realtime;
@@ -17,9 +7,8 @@ using Photon.Realtime;
 
 /// <summary>
 /// Player manager.
-/// Handles fire Input and Beams.
 /// </summary>
-public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
+public class PlayerManager : MonoBehaviourPunCallbacks
 {
     #region Public Fields
 
@@ -34,11 +23,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     private GameObject playerUiPrefab;
 
-
-
-    //True, when the user is firing
-    bool IsFiring;
-
     #endregion
 
     #region MonoBehaviour CallBacks
@@ -48,8 +32,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     /// </summary>
     public void Awake()
     {
-
-
         // #Important
         // used in GameManager.cs: we keep track of the localPlayer instance to prevent instanciation when levels are synchronized
         if (photonView.IsMine)
@@ -67,34 +49,22 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     /// </summary>
     public void Start()
     {
-        Debug.Log("test start");
         GameObject cameraController = GameObject.Find("Camera Controller");
         Camera playercam = GameObject.Find("Camera Controller").GetComponent<Camera>();
         PlayerCamera playerCamScript = GameObject.Find("Camera Controller").GetComponent<PlayerCamera>();
         AudioListener playerAudio = GameObject.Find("Camera Controller").GetComponent<AudioListener>();
 
-
         if (photonView.IsMine)
         {
-            Debug.Log("PhotonView is mine");
             gameObject.GetComponent<CharacterController>().enabled = true;
             gameObject.GetComponent<PlayerMovement>().enabled = true;
+
             playerCamScript.enabled = true;
             playerAudio.enabled = true;
             playercam.enabled = true;
-            GameObject.Find("SelectionManager").GetComponent<selectionmanager>().enabled = true;
-        }
-        else
-        {
-            Debug.LogError("photonview is not mine");
-            //gameObject.GetComponent<CharacterController>().enabled = false;
-            //gameObject.GetComponent<PlayerMovement>().enabled = false;
-            //playerCamScript.enabled = false;
-            //playercam.enabled = false;
-            //playerAudio.enabled = false;
-        }
 
-
+            GameObject.Find("SelectionManager").GetComponent<SelectionManager>().enabled = true;
+        }
 
         // Create the UI
         if (this.playerUiPrefab != null)
@@ -102,17 +72,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
             GameObject _uiGo = Instantiate(this.playerUiPrefab);
             _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
         }
-        else
-        {
-            Debug.LogWarning("<Color=Red><b>Missing</b></Color> PlayerUiPrefab reference on player Prefab.", this);
-        }
 
 #if UNITY_5_4_OR_NEWER
         // Unity 5.4 has a new scene management. register a method to call CalledOnLevelWasLoaded.
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
 #endif
     }
-
 
     public override void OnDisable()
     {
@@ -124,70 +89,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
 #endif
     }
 
-
-    /// <summary>
-    /// MonoBehaviour method called on GameObject by Unity on every frame.
-    /// Process Inputs if local player.
-    /// Show and hide the beams
-    /// Watch for end of game, when local player health is 0.
-    /// </summary>
-    public void Update()
-    {
-        // we only process Inputs and check health if we are the local player
-        if (photonView.IsMine)
-        {
-            this.ProcessInputs();
-
-        }
-    }
-
-    /// <summary>
-    /// MonoBehaviour method called when the Collider 'other' enters the trigger.
-    /// Affect Health of the Player if the collider is a beam
-    /// Note: when jumping and firing at the same, you'll find that the player's own beam intersects with itself
-    /// One could move the collider further away to prevent this or check if the beam belongs to the player.
-    /// </summary>
-    public void OnTriggerEnter(Collider other)
-    {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-
-        // We are only interested in Beamers
-        // we should be using tags but for the sake of distribution, let's simply check by name.
-        if (!other.name.Contains("Beam"))
-        {
-            return;
-        }
-
-    }
-
-    /// <summary>
-    /// MonoBehaviour method called once per frame for every Collider 'other' that is touching the trigger.
-    /// We're going to affect health while the beams are interesting the player
-    /// </summary>
-    /// <param name="other">Other.</param>
-    public void OnTriggerStay(Collider other)
-    {
-        // we dont' do anything if we are not the local player.
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-        // We are only interested in Beamers
-        // we should be using tags but for the sake of distribution, let's simply check by name.
-        if (!other.name.Contains("Beam"))
-        {
-            return;
-        }
-
-        // we slowly affect health when beam is constantly hitting us, so player has to move to prevent death.
-    }
-
-
 #if !UNITY_5_4_OR_NEWER
         /// <summary>See CalledOnLevelWasLoaded. Outdated in Unity 5.4.</summary>
         void OnLevelWasLoaded(int level)
@@ -196,12 +97,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         }
 #endif
 
-
-    /// <summary>
-    /// MonoBehaviour method called after a new level of index 'level' was loaded.
-    /// We recreate the Player UI because it was destroy when we switched level.
-    /// Also reposition the player if outside the current arena.
-    /// </summary>
     /// <param name="level">Level index loaded</param>
     void CalledOnLevelWasLoaded(int level)
     {
@@ -226,53 +121,5 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
         this.CalledOnLevelWasLoaded(scene.buildIndex);
     }
 #endif
-
-    /// <summary>
-    /// Processes the inputs. This MUST ONLY BE USED when the player has authority over this Networked GameObject (photonView.isMine == true)
-    /// </summary>
-    void ProcessInputs()
-    {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            // we don't want to fire when we interact with UI buttons for example. IsPointerOverGameObject really means IsPointerOver*UI*GameObject
-            // notice we don't use on on GetbuttonUp() few lines down, because one can mouse down, move over a UI element and release, which would lead to not lower the isFiring Flag.
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                //	return;
-            }
-
-            if (!this.IsFiring)
-            {
-                this.IsFiring = true;
-            }
-        }
-
-        if (Input.GetButtonUp("Fire1"))
-        {
-            if (this.IsFiring)
-            {
-                this.IsFiring = false;
-            }
-        }
-    }
-
-    #endregion
-
-    #region IPunObservable implementation
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            // We own this player: send the others our data
-            stream.SendNext(this.IsFiring);
-        }
-        else
-        {
-            // Network player, receive data
-            this.IsFiring = (bool)stream.ReceiveNext();
-        }
-    }
-
     #endregion
 }

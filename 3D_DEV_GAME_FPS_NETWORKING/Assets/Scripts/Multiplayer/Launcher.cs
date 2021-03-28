@@ -1,16 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Launcher.cs" company="Exit Games GmbH">
-//   Part of: Photon Unity Networking Demos
-// </copyright>
-// <summary>
-//  Used in "PUN Basic tutorial" to connect, and join/create room automatically
-// </summary>
-// <author>developer@exitgames.com</author>
-// --------------------------------------------------------------------------------------------------------------------
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-
 using Photon.Realtime;
 
 namespace Photon.Pun.Demo.PunBasics
@@ -22,7 +11,6 @@ namespace Photon.Pun.Demo.PunBasics
     /// </summary>
 	public class Launcher : MonoBehaviourPunCallbacks
     {
-
 		#region Private Serializable Fields
 
 		[Tooltip("The Ui Panel to let the user enter name, connect and play")]
@@ -49,12 +37,12 @@ namespace Photon.Pun.Demo.PunBasics
 		/// we need to keep track of this to properly adjust the behavior when we receive call back by Photon.
 		/// Typically this is used for the OnConnectedToMaster() callback.
 		/// </summary>
-		bool isConnecting;
+		private bool isConnecting;
 
 		/// <summary>
 		/// This client's version number. Users are separated from each other by gameVersion (which allows you to make breaking changes).
 		/// </summary>
-		string gameVersion = "1";
+		private string gameVersion = "1";
 
 		#endregion
 
@@ -67,17 +55,13 @@ namespace Photon.Pun.Demo.PunBasics
 		{
 			if (loaderAnime==null)
 			{
-				Debug.LogError("<Color=Red><b>Missing</b></Color> loaderAnime Reference.",this);
+				Debug.LogError("Missing Loader Animation");
 			}
 
-			// #Critical
 			// this makes sure we can use PhotonNetwork.LoadLevel() on the master client and all clients in the same room sync their level automatically
 			PhotonNetwork.AutomaticallySyncScene = true;
-
 		}
-
 		#endregion
-
 
 		#region Public Methods
 
@@ -110,7 +94,6 @@ namespace Photon.Pun.Demo.PunBasics
 				// #Critical we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
 				PhotonNetwork.JoinRandomRoom();
 			}else{
-
 				LogFeedback("Connecting...");
 				
 				// #Critical, we must first and foremost connect to Photon Online Server.
@@ -133,9 +116,7 @@ namespace Photon.Pun.Demo.PunBasics
 			// add new messages as a new line and at the bottom of the log.
 			feedbackText.text += System.Environment.NewLine+message;
 		}
-
         #endregion
-
 
         #region MonoBehaviourPunCallbacks CallBacks
         // below, we implement some callbacks of PUN
@@ -169,7 +150,6 @@ namespace Photon.Pun.Demo.PunBasics
 		public override void OnJoinRandomFailed(short returnCode, string message)
 		{
 			LogFeedback("<Color=Red>OnJoinRandomFailed</Color>: Next -> Create a new Room");
-			Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
 			// #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
 			PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = this.maxPlayersPerRoom});
@@ -182,14 +162,12 @@ namespace Photon.Pun.Demo.PunBasics
 		public override void OnDisconnected(DisconnectCause cause)
 		{
 			LogFeedback("<Color=Red>OnDisconnected</Color> "+cause);
-			Debug.LogError("PUN Basics Tutorial/Launcher:Disconnected");
 
 			// #Critical: we failed to connect or got disconnected. There is not much we can do. Typically, a UI system should be in place to let the user attemp to connect again.
 			loaderAnime.StopLoaderAnimation();
 
 			isConnecting = false;
 			controlPanel.SetActive(true);
-
 		}
 
 		/// <summary>
@@ -206,21 +184,13 @@ namespace Photon.Pun.Demo.PunBasics
 		public override void OnJoinedRoom()
 		{
 			LogFeedback("<Color=Green>OnJoinedRoom</Color> with "+PhotonNetwork.CurrentRoom.PlayerCount+" Player(s)");
-			Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running.");
 		
 			// #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.AutomaticallySyncScene to sync our instance scene.
 			if (PhotonNetwork.IsMasterClient)
 			{
-				Debug.Log("We load the 'Room for 1' ");
-
-				// #Critical
-				// Load the Room Level. 
 				PhotonNetwork.LoadLevel("MainScene");
-
 			}
 		}
-
 		#endregion
-		
 	}
 }

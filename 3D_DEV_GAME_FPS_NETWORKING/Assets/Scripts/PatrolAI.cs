@@ -1,27 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using Photon.Pun;
-using Photon.Realtime;
 
 public class PatrolAI : MonoBehaviour
 {
-    public float FollowDistance;
+    public float FollowDistance = 7.5f;
+
     public NavMeshAgent patroler;
     private GameObject[] players;
-    public Transform[] points;
-
-    private int destPoint = 0;
     private NavMeshAgent agent;
+
+    public Transform[] points;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
 
-        // Disabling auto-braking allows for continuous movement
-        // between points (ie, the agent doesn't slow down as it
-        // approaches a destination point).
         agent.autoBraking = true;
 
         GotoNextPoint();
@@ -36,7 +29,7 @@ public class PatrolAI : MonoBehaviour
             {
                 float dist = Vector3.Distance(item.transform.position, this.transform.position);
 
-                bool patrol = false;
+                bool patrol = true;
                 bool follow = (dist < FollowDistance);
 
 
@@ -45,25 +38,23 @@ public class PatrolAI : MonoBehaviour
                     agent.SetDestination(item.transform.position);
                 }
                 patrol = !follow && points.Length > 0;
-
-
                 if (patrol)
                 {
                     if (!agent.pathPending && agent.remainingDistance < 0.5f)
+                    {
                         GotoNextPoint();
+                        Debug.Log("test");
+                    }
                 }
             }
         }
-        
     }
-
 
     void GotoNextPoint()
     {
         if (points.Length > 0)
         {
             agent.destination = points[Random.Range(0, 43)].position;
-
         }
     }
 }
