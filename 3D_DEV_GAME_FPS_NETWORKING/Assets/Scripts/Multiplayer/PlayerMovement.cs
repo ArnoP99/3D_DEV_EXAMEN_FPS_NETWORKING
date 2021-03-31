@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public enum PlayerStates
 {
     Idle,
@@ -42,11 +41,11 @@ public class PlayerMovement : MonoBehaviour
     public List<AudioClip> JumpSounds;
     public List<AudioClip> LandSounds;
 
-    CharacterController characterController;
+    private CharacterController characterController;
 
-    float _footstepDelay;
-    AudioSource _audioSource;
-    float footstep_et = 0;
+    private float _footstepDelay;
+    private AudioSource _audioSource;
+    private float footstep_et = 0;
 
     // Use this for initialization
     void Start()
@@ -129,7 +128,6 @@ public class PlayerMovement : MonoBehaviour
         //play land sound
         if (_audioSource)
             _audioSource.PlayOneShot(LandSounds[Random.Range(0, LandSounds.Count)]);
-
     }
 
     void SetCharacterAnimations()
@@ -194,5 +192,4 @@ public class PlayerMovement : MonoBehaviour
             _audioSource.PlayOneShot(FootstepSounds[Random.Range(0, FootstepSounds.Count)]);
         }
     }
-
 }

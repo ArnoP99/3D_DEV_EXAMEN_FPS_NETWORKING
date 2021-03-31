@@ -1,26 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class enemyfollow : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public NavMeshAgent enemy;
+    [SerializeField] private NavMeshAgent enemy;
     private GameObject[] players;
-    void Start()
-    {
-        
-    }
+    private GameObject closestPlayer;
+    private float distance = 1000f;
 
-    // Update is called once per frame
     void Update()
     {
         players = GameObject.FindGameObjectsWithTag("Player");
         foreach (var item in players)
         {
-            enemy.SetDestination(item.transform.position);
+            if (Vector3.Distance(item.transform.position, enemy.transform.position) < distance)
+            {
+                closestPlayer = item;
+            }
         }
-       
+        if (closestPlayer != null)
+        {
+            enemy.SetDestination(closestPlayer.transform.position);
+        }
+
+        distance = 1000f; // Reset distance for next check
     }
 }

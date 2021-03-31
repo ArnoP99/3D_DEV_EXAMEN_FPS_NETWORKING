@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum CameraPerspective
 {
@@ -10,7 +8,6 @@ public enum CameraPerspective
 
 public class PlayerCamera : MonoBehaviour
 {
-
     [Header("Input Settings")]
     public string MouseXInput;
     public string MouseYInput;
@@ -31,12 +28,11 @@ public class PlayerCamera : MonoBehaviour
     public Vector3 TPS_CameraOffset;
     public Vector2 TPS_MinMaxAngles;
 
-    Transform FPSController;
-    float xClamp;
-    Vector3 camMoveLoc;
-    Transform _fpsCameraHelper;
-    Transform _tpsCameraHelper;
-    bool cameraLock = false;
+    private Transform FPSController;
+    private float xClamp;
+    private Transform _fpsCameraHelper;
+    private Transform _tpsCameraHelper;
+    private bool cameraLock = false;
 
     private void Awake()
     {
@@ -75,7 +71,7 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(cameraLock == false)
+        if (cameraLock == false)
         {
             SwitchCameraPerspectiveInput();
 
@@ -94,7 +90,6 @@ public class PlayerCamera : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             cameraLock = false;
-
         }
     }
 
@@ -111,7 +106,6 @@ public class PlayerCamera : MonoBehaviour
                 cameraPerspective = CameraPerspective.FirstPerson;
             }
         }
-
     }
 
     void GetSetPerspective()
@@ -136,7 +130,6 @@ public class PlayerCamera : MonoBehaviour
         _fpsCameraHelper.localPosition = FPS_CameraOffset;
 
         transform.position = _fpsCameraHelper.position;
-
     }
 
     void SetCameraHelperPosition_TPS()
@@ -147,7 +140,6 @@ public class PlayerCamera : MonoBehaviour
         _tpsCameraHelper.localPosition = TPS_CameraOffset;
 
         transform.position = _tpsCameraHelper.position;
-
     }
 
     void RotateCamera()

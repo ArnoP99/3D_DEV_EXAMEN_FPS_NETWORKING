@@ -49,14 +49,12 @@ namespace EasySurvivalScripts
         AudioSource _audioSource;
         float footstep_et = 0;
 
-        // Use this for initialization
         void Start()
         {
             characterController = GetComponent<CharacterController>();
             _audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        // Update is called once per frame
         void Update()
         {
             //handle controller
@@ -87,7 +85,9 @@ namespace EasySurvivalScripts
             if (characterController.isGrounded)
             {
                 if (hInput == 0 && vInput == 0)
+                {
                     playerStates = PlayerStates.Idle;
+                }
                 else
                 {
                     if (_speed == walkSpeed)
@@ -99,7 +99,9 @@ namespace EasySurvivalScripts
                 }
             }
             else
+            {
                 playerStates = PlayerStates.Jumping;
+            }
         }
 
         void Jump()
@@ -115,7 +117,9 @@ namespace EasySurvivalScripts
         {
             //play jump sound
             if (_audioSource)
+            {
                 _audioSource.PlayOneShot(JumpSounds[Random.Range(0, JumpSounds.Count)]);
+            }
 
             float _jump = JumpForce;
 
@@ -130,7 +134,6 @@ namespace EasySurvivalScripts
             //play land sound
             if (_audioSource)
                 _audioSource.PlayOneShot(LandSounds[Random.Range(0, LandSounds.Count)]);
-
         }
 
         void SetCharacterAnimations()
@@ -175,10 +178,13 @@ namespace EasySurvivalScripts
             bool retVal = false;
 
             if (Physics.Raycast(FootLocation.position, Vector3.down, 0.1f))
+            {
                 retVal = true;
+            }
             else
+            {
                 retVal = false;
-
+            }
             return retVal;
         }
 
@@ -195,13 +201,14 @@ namespace EasySurvivalScripts
                 return;
 
             if (footstep_et < _footstepDelay)
+            {
                 footstep_et += Time.deltaTime;
+            }
             else
             {
                 footstep_et = 0;
                 _audioSource.PlayOneShot(FootstepSounds[Random.Range(0, FootstepSounds.Count)]);
             }
         }
-
     }
 }
