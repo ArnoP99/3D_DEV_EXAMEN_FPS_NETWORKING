@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyFollow : MonoBehaviour
+public class enemyfollow : MonoBehaviour
 {
     [SerializeField] private NavMeshAgent enemy;
     private GameObject[] players;

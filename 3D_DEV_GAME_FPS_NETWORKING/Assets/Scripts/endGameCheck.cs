@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Diagnostics;
 using System.IO;
 
-public class EndGameCheck : MonoBehaviour
+public class endGameCheck : MonoBehaviour
 {
     [SerializeField] private Text score;
     private string tempNum;
@@ -26,7 +26,7 @@ public class EndGameCheck : MonoBehaviour
         
         if (score.text.Substring(0, 1) == "9")
         {
-            string time = timer.Elapsed.ToString("F2");
+            string time = timer.Elapsed.ToString();
             timer.Stop();
 
             tempNum = score.text.Substring(0, 1);

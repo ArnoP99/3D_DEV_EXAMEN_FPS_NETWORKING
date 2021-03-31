@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using Photon.Pun;
 
-public class SelectionManager : MonoBehaviour, IPunObservable
+public class SelectionManager: MonoBehaviour, IPunObservable
 {
     [SerializeField] private Material highlightMaterial;
     [SerializeField] private Material defaultMaterial;
